@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Complex Disaster Catalog</title>
+  <script src="js/d3.min.js"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  <link rel=stylesheet type="text/css" href="style/main.css">
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+</head>
+
+<body>
+
+
+<script type="text/javascript">
+
+d3.json('result.json', function(pointjson){all(pointjson);});
+
+function all(pointjson) {
+  //Google Map 初始化設定
+  var map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 7,
+    minZoom: 7,
+    maxZoom: 7,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    center: new google.maps.LatLng(24.013311,121.089174),
+  });
+
+  var overlay = new google.maps.OverlayView();
+  overlay.onAdd = function () {
+    var layer = d3.select(this.getPanes().overlayLayer).append("div").attr("class", "SvgOverlay");
+
+    var svg = layer.append("svg");
+    var svgoverlay = svg.append("g").attr("class", "AdminDivisions");
+    //繪圖
+    overlay.draw = function () {
+      var markerOverlay = this;
+      var overlayProjection = markerOverlay.getProjection();
+      //Google Map投影設定
+      var googleMapProjection = function (coordinates) {
+        var googleCoordinates = new google.maps.LatLng(coordinates[1], coordinates[0]);
+        var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+        return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+      }
+      //點信息
+      var pointdata = pointjson.features;
+
+      //取得點強度
+      var pointStrength = pointjson.features;
+
+      var pointDisaster = pointjson.features;
+
+      //位置信息
+      var positions = [];
+      pointdata.forEach(function(d) {
+        positions.push(googleMapProjection(d.geometry.coordinates)); //位置資訊
+      });
+
+      var strength = [];
+      pointStrength.forEach(function(d) {
+        strength.push(d.properties.Magnitude); //位置資訊
+      });
+
+      var disasterType=[];
+      pointDisaster.forEach(function(d){
+        disasterType.push(d.properties.Disaster);
+      });
+
+        //點屬性
+      var circleAttr = {
+            "cx":function(d, i) { return positions[i][0]; },
+            "cy":function(d, i) { return positions[i][1]; },
+            "opacity":function(d, i) {
+              if(strength[i] == "Extra Large"){
+                return 0.9;
+              }else if (strength[i] == "Very_large") {
+                return 0.8;
+              }else if(strength[i] == "Large"){
+                return 0.7;
+              }else if(strength[i] == "Medium"){
+                return 0.6;
+              }else if(strength[i] == "Small"){
+                return 0.5;
+              }else{
+                return 0.4;
+              }
+             },
+            "r":function(d, i) {
+              
+                if(strength[i] == "Extra Large"){
+                  return map.getZoom()*6;
+                }else if (strength[i] == "Very_large") {
+                  return map.getZoom()*5;
+                }else if(strength[i] == "Large"){
+                  return map.getZoom()*4;
+                }else if(strength[i] == "Medium"){
+                  return map.getZoom()*3;
+                }else if(strength[i] == "Small"){
+                  return map.getZoom()*2;
+                }else{
+                  return map.getZoom()*1;
+                }
+
+              
+             },
+
+            fill:"red"
+
+      }
+
+
+      //輸出點
+      svgoverlay.selectAll("circle")
+        .data(pointdata)
+        .attr(circleAttr)
+        .enter()
+        .append("svg:circle")
+        .attr(circleAttr)
+    };
+  };
+  //刷出創建好的SVG
+  overlay.setMap(map);
+
+
+function refresh(){
+  location.reload();
+}
+
+function test(){
+  if((document.orderForm.landslide.checked == true) && (document.orderForm.earthquake.checked == true)){
+    window.alert("all checked");
+    d3.json('result.json', function(pointjson){all(pointjson);});
+
+function all(pointjson) {
+  //Google Map 初始化設定
+  var map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 7,
+    minZoom: 7,
+    maxZoom: 7,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    center: new google.maps.LatLng(24.013311,121.089174),
+  });
+
+  var overlay = new google.maps.OverlayView();
+  overlay.onAdd = function () {
+    var layer = d3.select(this.getPanes().overlayLayer).append("div").attr("class", "SvgOverlay");
+
+    var svg = layer.append("svg");
+    var svgoverlay = svg.append("g").attr("class", "AdminDivisions");
+    //繪圖
+    overlay.draw = function () {
+      var markerOverlay = this;
+      var overlayProjection = markerOverlay.getProjection();
+      //Google Map投影設定
+      var googleMapProjection = function (coordinates) {
+        var googleCoordinates = new google.maps.LatLng(coordinates[1], coordinates[0]);
+        var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+        return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+      }
+      //點信息
+      var pointdata = pointjson.features;
+
+      //取得點強度
+      var pointStrength = pointjson.features;
+
+      var pointDisaster = pointjson.features;
+
+      //位置信息
+      var positions = [];
+      pointdata.forEach(function(d) {
+        positions.push(googleMapProjection(d.geometry.coordinates)); //位置資訊
+      });
+
+      var strength = [];
+      pointStrength.forEach(function(d) {
+        strength.push(d.properties.Magnitude); //位置資訊
+      });
+
+      var disasterType=[];
+      pointDisaster.forEach(function(d){
+        disasterType.push(d.properties.Disaster);
+      });
+
+        //點屬性
+      var circleAttr = {
+            "cx":function(d, i) { return positions[i][0]; },
+            "cy":function(d, i) { return positions[i][1]; },
+            "opacity":function(d, i) {
+              if(strength[i] == "Extra Large"){
+                return 0.9;
+              }else if (strength[i] == "Very_large") {
+                return 0.8;
+              }else if(strength[i] == "Large"){
+                return 0.7;
+              }else if(strength[i] == "Medium"){
+                return 0.6;
+              }else if(strength[i] == "Small"){
+                return 0.5;
+              }else{
+                return 0.4;
+              }
+             },
+            "r":function(d, i) {
+              
+                if(strength[i] == "Extra Large"){
+                  return map.getZoom()*6;
+                }else if (strength[i] == "Very_large") {
+                  return map.getZoom()*5;
+                }else if(strength[i] == "Large"){
+                  return map.getZoom()*4;
+                }else if(strength[i] == "Medium"){
+                  return map.getZoom()*3;
+                }else if(strength[i] == "Small"){
+                  return map.getZoom()*2;
+                }else{
+                  return map.getZoom()*1;
+                }
+
+              
+             },
+
+            fill:"red"
+
+      }
+
+
+      //輸出點
+      svgoverlay.selectAll("circle")
+        .data(pointdata)
+        .attr(circleAttr)
+        .enter()
+        .append("svg:circle")
+        .attr(circleAttr)
+    };
+  };
+  //刷出創建好的SVG
+  overlay.setMap(map);
+}
+  }else if((document.orderForm.landslide.checked == false) && (document.orderForm.earthquake.checked == true)){
+      window.alert("Earthquake checked!");
+      d3.json('result_earthquake.json', function(pointjson){onlyearthquake(pointjson);});
+
+function onlyearthquake(pointjson) {
+  //Google Map 初始化設定
+  var map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 7,
+    minZoom: 7,
+    maxZoom: 7,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    center: new google.maps.LatLng(24.013311,121.089174),
+  });
+
+  var overlay = new google.maps.OverlayView();
+  overlay.onAdd = function () {
+    var layer = d3.select(this.getPanes().overlayLayer).append("div").attr("class", "SvgOverlay");
+
+    var svg = layer.append("svg");
+    var svgoverlay = svg.append("g").attr("class", "AdminDivisions");
+    //繪圖
+    overlay.draw = function () {
+      var markerOverlay = this;
+      var overlayProjection = markerOverlay.getProjection();
+      //Google Map投影設定
+      var googleMapProjection = function (coordinates) {
+        var googleCoordinates = new google.maps.LatLng(coordinates[1], coordinates[0]);
+        var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+        return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+      }
+      //點信息
+      var pointdata = pointjson.features;
+
+      //取得點強度
+      var pointStrength = pointjson.features;
+
+      var pointDisaster = pointjson.features;
+
+      //位置信息
+      var positions = [];
+      pointdata.forEach(function(d) {
+        positions.push(googleMapProjection(d.geometry.coordinates)); //位置資訊
+      });
+
+      var strength = [];
+      pointStrength.forEach(function(d) {
+        strength.push(d.properties.Magnitude); //位置資訊
+      });
+
+      var disasterType=[]
+      pointDisaster.forEach(function(d){
+        disasterType.push(d.properties.Disaster)
+      });
+
+        //點屬性
+      var circleAttr = {
+            "cx":function(d, i) { return positions[i][0]; },
+            "cy":function(d, i) { return positions[i][1]; },
+            "opacity":function(d, i) {
+              if(strength[i] == "Extra Large"){
+                return 0.9;
+              }else if (strength[i] == "Very_large") {
+                return 0.8;
+              }else if(strength[i] == "Large"){
+                return 0.7;
+              }else if(strength[i] == "Medium"){
+                return 0.6;
+              }else if(strength[i] == "Small"){
+                return 0.5;
+              }else{
+                return 0.4;
+              }
+             },
+            "r":function(d, i) {
+              
+                if(strength[i] == "Extra Large"){
+                  return map.getZoom()*6;
+                }else if (strength[i] == "Very_large") {
+                  return map.getZoom()*5;
+                }else if(strength[i] == "Large"){
+                  return map.getZoom()*4;
+                }else if(strength[i] == "Medium"){
+                  return map.getZoom()*3;
+                }else if(strength[i] == "Small"){
+                  return map.getZoom()*2;
+                }else{
+                  return map.getZoom()*1;
+                }
+
+              
+             },
+
+            fill:"red"
+
+      }
+
+
+      //輸出點
+      svgoverlay.selectAll("circle")
+        .data(pointdata)
+        .attr(circleAttr)
+        .enter()
+        .append("svg:circle")
+        .attr(circleAttr)
+    };
+  };
+  //刷出創建好的SVG
+  overlay.setMap(map);
+}
+  }else if((document.orderForm.landslide.checked == true) && (document.orderForm.earthquake.checked == false)){
+    window.alert("landslide checked");
+    d3.json('result.json', function(pointjson){onlylandslide(pointjson);});
+
+function onlylandslide(pointjson) {
+  //Google Map 初始化設定
+  var map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 7,
+    minZoom: 7,
+    maxZoom: 7,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    center: new google.maps.LatLng(24.013311,121.089174),
+  });
+
+  var overlay = new google.maps.OverlayView();
+  overlay.onAdd = function () {
+    var layer = d3.select(this.getPanes().overlayLayer).append("div").attr("class", "SvgOverlay");
+
+    var svg = layer.append("svg");
+    var svgoverlay = svg.append("g").attr("class", "AdminDivisions");
+    //繪圖
+    overlay.draw = function () {
+      var markerOverlay = this;
+      var overlayProjection = markerOverlay.getProjection();
+      //Google Map投影設定
+      var googleMapProjection = function (coordinates) {
+        var googleCoordinates = new google.maps.LatLng(coordinates[1], coordinates[0]);
+        var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+        return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+      }
+      //點信息
+      var pointdata = pointjson.features;
+
+      //取得點強度
+      var pointStrength = pointjson.features;
+
+      var pointDisaster = pointjson.features;
+
+      //位置信息
+      var positions = [];
+      pointdata.forEach(function(d) {
+        positions.push(googleMapProjection(d.geometry.coordinates)); //位置資訊
+      });
+
+      var strength = [];
+      pointStrength.forEach(function(d) {
+        strength.push(d.properties.Magnitude); //位置資訊
+      });
+
+      var disasterType=[]
+      pointDisaster.forEach(function(d){
+        disasterType.push(d.properties.Disaster)
+      });
+
+        //點屬性
+      var circleAttr = {
+            "cx":function(d, i) { return positions[i][0]; },
+            "cy":function(d, i) { return positions[i][1]; },
+            "opacity":function(d, i) {
+              if(strength[i] == "Extra Large"){
+                return 0.9;
+              }else if (strength[i] == "Very_large") {
+                return 0.8;
+              }else if(strength[i] == "Large"){
+                return 0.7;
+              }else if(strength[i] == "Medium"){
+                return 0.6;
+              }else if(strength[i] == "Small"){
+                return 0.5;
+              }else{
+                return 0.4;
+              }
+             },
+            "r":function(d, i) {
+              
+                if((disasterType[i] == "Landslide") && (strength[i] == "Extra Large")){
+                  return map.getZoom()*6;
+                }else if ((disasterType[i] == "Landslide") && (strength[i] == "Very_large")) {
+                  return map.getZoom()*5;
+                }else if((disasterType[i] == "Landslide") && (strength[i] == "Large")){
+                  return map.getZoom()*4;
+                }else if((disasterType[i] == "Landslide") && (strength[i] == "Medium")){
+                  return map.getZoom()*3;
+                }else if((disasterType[i] == "Landslide") && (strength[i] == "Small")){
+                  return map.getZoom()*2;
+                }else{
+                  return 0;
+                }
+
+              
+             },
+
+            fill:"red"
+
+      }
+
+
+      //輸出點
+      svgoverlay.selectAll("circle")
+        .data(pointdata)
+        .attr(circleAttr)
+        .enter()
+        .append("svg:circle")
+        .attr(circleAttr)
+    };
+  };
+  //刷出創建好的SVG
+  overlay.setMap(map);
+}
+  }else{
+    window.alert("no checked"); 
+    d3.json('result.json', function(pointjson){onlylandslide(pointjson);});
+
+function onlylandslide(pointjson) {
+  //Google Map 初始化設定
+  var map = new google.maps.Map(document.getElementById('map_canvas'), {
+    zoom: 7,
+    minZoom: 7,
+    maxZoom: 7,
+    mapTypeId: google.maps.MapTypeId.HYBRID,
+    center: new google.maps.LatLng(24.013311,121.089174),
+  });
+
+  var overlay = new google.maps.OverlayView();
+  overlay.onAdd = function () {
+    var layer = d3.select(this.getPanes().overlayLayer).append("div").attr("class", "SvgOverlay");
+
+    var svg = layer.append("svg");
+    var svgoverlay = svg.append("g").attr("class", "AdminDivisions");
+    //繪圖
+    overlay.draw = function () {
+      var markerOverlay = this;
+      var overlayProjection = markerOverlay.getProjection();
+      //Google Map投影設定
+      var googleMapProjection = function (coordinates) {
+        var googleCoordinates = new google.maps.LatLng(coordinates[1], coordinates[0]);
+        var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+        return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+      }
+      //點信息
+      var pointdata = pointjson.features;
+
+      //取得點強度
+      var pointStrength = pointjson.features;
+
+      var pointDisaster = pointjson.features;
+
+      //位置信息
+      var positions = [];
+      pointdata.forEach(function(d) {
+        positions.push(googleMapProjection(d.geometry.coordinates)); //位置資訊
+      });
+
+      var strength = [];
+      pointStrength.forEach(function(d) {
+        strength.push(d.properties.Magnitude); //位置資訊
+      });
+
+      var disasterType=[]
+      pointDisaster.forEach(function(d){
+        disasterType.push(d.properties.Disaster)
+      });
+
+        //點屬性
+      var circleAttr = {
+            "cx":function(d, i) { return positions[i][0]; },
+            "cy":function(d, i) { return positions[i][1]; },
+            "opacity":function(d, i) {
+              if(strength[i] == "Extra Large"){
+                return 0.9;
+              }else if (strength[i] == "Very_large") {
+                return 0.8;
+              }else if(strength[i] == "Large"){
+                return 0.7;
+              }else if(strength[i] == "Medium"){
+                return 0.6;
+              }else if(strength[i] == "Small"){
+                return 0.5;
+              }else{
+                return 0.4;
+              }
+             },
+            r:"0",
+
+            fill:"red"
+
+      }
+
+
+      //輸出點
+      svgoverlay.selectAll("circle")
+        .data(pointdata)
+        .attr(circleAttr)
+        .enter()
+        .append("svg:circle")
+        .attr(circleAttr)
+    };
+  };
+  //刷出創建好的SVG
+  overlay.setMap(map);
+  }
+}
+
+  
+</script>
+
+<div class="row">
+
+<div class="col-md-8"><div id="map_canvas"></div></div>
+<div class="col-md-4"  class="text-right">
+<h3>Complex Disaster Catalog</h3></br>
+<form name="orderForm">
+  <input type="checkbox" name="landslide" >Landslide<br>
+  <input type="checkbox" name="earthquake" >Earthquake<hr>
+  <input type="button" value="Submit Order" class="btn btn-primary" name="orderButton" onClick="test()">
+  <input type="button" value="Refresh" name="orderButton" class="btn btn-primary" onClick="refresh()"></div>
+</form>
+</div>
+
+
+
+<!-- 個人資料 -->
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="container">
+        <div class="row">
+        	<div class="col-md-6">
+
+            <div class="panel panel-default">
+      			<div class="panel-body">
+                    		<div class="row">
+                              <div class="col-xs-12 col-sm-8">
+                                  <h2>Eric Wu</h2>
+                                  <p>Web Designer / UI. </p>
+                                  <p><strong>GitHub: </strong> <a href="https://github.com/eric0324">Link</a> </p>
+                                  <p><strong>Skills: </strong>
+                                      <span class="label label-info tags">html5</span>
+                                      <span class="label label-info tags">css3</span>
+                                      <span class="label label-info tags">jquery</span>
+                                      <span class="label label-info tags">Ruby</span>
+                                      <span class="label label-info tags">Rails</span>
+                                      <span class="label label-info tags">Android</span>
+                                  </p>
+                              </div><!--/col-->
+                              <div class="col-xs-12 col-sm-4 text-center">
+                                      <img src="img/gx.jpg" alt="" class="center-block img-circle img-responsive">
+                                      <ul class="list-inline ratings text-center" title="Ratings">
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                      </ul>
+                              </div><!--/col-->
+
+
+                    		</div><!--/row-->
+                    </div><!--/panel-body-->
+                </div><!--/panel-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="container">
+        <div class="row">
+        	<div class="col-md-6">
+
+            <div class="panel panel-default">
+      			<div class="panel-body">
+                    		<div class="row">
+                              <div class="col-xs-12 col-sm-8">
+                                  <h2>lin021393</h2>
+                                  <p>... </p>
+                                  <p><strong>GitHub: </strong> <a href="https://github.com/lin021393">Link</a> </p>
+                                  <p><strong>Skills: </strong>
+                                      <span class="label label-info tags">C/C++</span>
+                                  </p>
+                              </div><!--/col-->
+                              <div class="col-xs-12 col-sm-4 text-center">
+                                      <img src="img/ch.png" alt="" class="center-block img-circle img-responsive">
+                                      <ul class="list-inline ratings text-center" title="Ratings">
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                        <li><a href="#"><span class="fa fa-star fa-lg"></span></a></li>
+                                      </ul>
+                              </div><!--/col-->
+                    		</div><!--/row-->
+                    </div><!--/panel-body-->
+                </div><!--/panel-->
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+</div>
+
+</body>
+</html>
